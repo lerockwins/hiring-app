@@ -32,3 +32,15 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'Github_server', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) { 
+                        sh """
+                        sed -i "s/tag: .*/tag: ${IMAGE_TAG}/" dev/deployment.yaml
+                        git add dev/deployment.yaml
+                        git commit -m 'Updated image tag to ${IMAGE_TAG} via Jenkins Pipeline'
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/betawins/Hiring-app-argocd.git main
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
